@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stillness — A Modern Meditation Guide</title>
+    <style>
+        :root {
+            --bg: #faf9f7;
+            --surface: #ffffff;
+            --primary: #5b7f5e;
+            --primary-light: #eaf0ea;
+            --primary-dark: #3f5a42;
+            --accent: #d4a373;
+            --accent-light: #fdf3e7;
+            --text: #2c2c2c;
+            --text-secondary: #5c5c5c;
+            --text-muted: #909090;
+            --border: #e0ddd8;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 28px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.1);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 32px;
+            --radius-xl: 40px;
+            --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 16px 32px;
+            transition: var(--transition);
+            mix-blend-mode: difference;
+        }
+        .navbar.scrolled {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px);
+            mix-blend-mode: normal;
+            box-shadow: var(--shadow-sm);
+            padding: 12px 32px;
+        }
+        .navbar-inner {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            transition: color 0.3s;
+        }
+        .navbar.scrolled .logo { color: var(--text); }
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        .navbar.scrolled .nav-links a { color: var(--text-secondary); }
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .navbar.scrolled .nav-links a:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        .nav-cta {
+            background: var(--accent) !important;
+            color: #fff !important;
+            padding: 10px 24px !important;
+            box-shadow: 0 4px 15px rgba(212,163,115,0.3);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+            filter: brightness(0.7);
+            transform: scale(1.1);
+            transition: transform 0.5s ease-out;
+        }
+        .hero:hover .hero-bg { transform: scale(1); }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(30,30,30,0.6) 0%, rgba(20,20,20,0.2) 70%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-text h1 {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            color: white;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+        }
+        .hero-text h1 span {
+            background: linear-gradient(to right, #f7e3c8, #f5d7b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-text p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 32px;
+            max-width: 450px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 32px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(212,163,115,0.4);
+        }
+        .btn-primary:hover {
+            background: #b8865a;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(212,163,115,0.5);
+        }
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.7);
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .hero-image-card {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            transform: rotate(2deg);
+        }
+        .hero-image-card img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ── SECTIONS ── */
+        .section {
+            padding: 120px 32px;
+        }
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-label {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(2.2rem, 4vw, 2.8rem);
+            font-weight: 750;
+            letter-spacing: -0.8px;
+            margin-bottom: 16px;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 50px;
+            max-width: 550px;
+        }
+
+        /* ── BENTO GRID BENEFITS ── */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto;
+            gap: 20px;
+        }
+        .bento-card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .bento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .bento-card.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            background: url('https://images.unsplash.com/photo-1508672019048-805c876b67e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80') center/cover;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 32px;
+        }
+        .bento-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        .bento-card h3 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .bento-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .bento-card.large h3 { font-size: 1.8rem; color: white; }
+        .bento-card.large p { color: rgba(255,255,255,0.85); }
+
+        /* ── MEDITATION SESSIONS ── */
+        .sessions-scroll {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            scroll-snap-type: x mandatory;
+        }
+        .session-card {
+            min-width: 300px;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            scroll-snap-align: start;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        .session-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+        .session-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .session-card .card-body {
+            padding: 22px;
+        }
+        .tag {
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 14px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .session-card h3 {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        /* ── BREATHING SECTION ── */
+        .breathing-panel {
+            background: linear-gradient(135deg, #f5f1eb, #efe8dd);
+            border-radius: var(--radius-xl);
+            padding: 70px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .breathing-panel::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80') center/cover;
+            border-radius: 50%;
+            opacity: 0.15;
+        }
+        .breath-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #a8c5a0, #5b7f5e);
+            box-shadow: 0 0 70px rgba(91,127,94,0.4);
+            margin: 0 auto 30px;
+            transition: transform 4s ease-in-out, box-shadow 4s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        .breath-circle.inhale { transform: scale(1.6); box-shadow: 0 0 100px rgba(91,127,94,0.6); }
+        .breath-circle.exhale { transform: scale(1); box-shadow: 0 0 50px rgba(91,127,94,0.3); }
+        .breath-text { color: white; font-weight: 700; font-size: 1.2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+
+        /* ── TIMER ── */
+        .timer-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 50px;
+            box-shadow: var(--shadow-md);
+            max-width: 480px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .timer-display {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            font-family: 'Inter', monospace;
+            margin: 20px 0;
+        }
+        .timer-presets { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+        .timer-preset {
+            padding: 10px 22px;
+            border-radius: 30px;
+            border: 2px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .timer-preset.active, .timer-preset:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: var(--surface);
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 900px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-image-card { max-width: 320px; margin: 0 auto; transform: none; }
+            .bento-grid { grid-template-columns: 1fr 1fr; }
+            .bento-card.large { grid-column: span 2; }
+        }
+        @media (max-width: 600px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .bento-card.large { grid-column: span 1; }
+            .nav-links .hide-mobile { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="#" class="logo">Stillness</a>
+            <ul class="nav-links">
+                <li><a href="#benefits" class="hide-mobile">Benefits</a></li>
+                <li><a href="#sessions">Sessions</a></li>
+                <li><a href="#breathe">Breathe</a></li>
+                <li><a href="#timer">Timer</a></li>
+                <li><a href="#" class="nav-cta">Start Free</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Discover <span>stillness</span> within.</h1>
+                <p>Immerse yourself in guided meditation, breathing techniques, and mindful practices — beautifully crafted for modern life.</p>
+                <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                    <a href="#sessions" class="btn btn-primary">Explore Sessions</a>
+                    <a href="#breathe" class="btn btn-outline">Try Breathing</a>
+                </div>
+            </div>
+            <div class="hero-image-card">
+                <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="woman meditating in nature">
+            </div>
+        </div>
+    </section>
+
+    <!-- BENEFITS BENTO GRID -->
+    <section class="section" id="benefits">
+        <div class="section-inner">
+            <span class="section-label">Why Meditate</span>
+            <h2 class="section-title">Science meets serenity</h2>
+            <p class="section-subtitle">A growing body of research shows how meditation reshapes your brain and body.</p>
+            <div class="bento-grid">
+                <div class="bento-card">
+                    <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="calm mind">
+                    <h3>Stress Reduction</h3>
+                    <p>Lower cortisol, better emotional regulation.</p>
+                </div>
+                <div class="bento-card">
+                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="focus">
+                    <h3>Laser Focus</h3>
+                    <p>Improve attention span and productivity.</p>
+                </div>
+                <div class="bento-card large">
+                    <h3>Deep Sleep</h3>
+                    <p>Wind down with body scans and yoga nidra. Wake up refreshed.</p>
+                </div>
+                <div class="bento-card">
+                    <img src="https://images.unsplash.com/photo-1518459031867-a89f3df19f3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="self compassion">
+                    <h3>Self-Compassion</h3>
+                    <p>Build kindness toward yourself.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MEDITATION SESSIONS HORIZONTAL SCROLL -->
+    <section class="section" id="sessions">
+        <div class="section-inner">
+            <span class="section-label">Guided Sessions</span>
+            <h2 class="section-title">Find your flow</h2>
+            <p class="section-subtitle">Handpicked audio experiences with nature visuals.</p>
+            <div class="sessions-scroll">
+                <div class="session-card">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="beach">
+                    <div class="card-body">
+                        <span class="tag">Morning</span>
+                        <h3>Ocean Sunrise</h3>
+                        <p>10 min • Beginner</p>
+                    </div>
+                </div>
+                <div class="session-card">
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="forest">
+                    <div class="card-body">
+                        <span class="tag">Focus</span>
+                        <h3>Forest Clarity</h3>
+                        <p>15 min • Intermediate</p>
+                    </div>
+                </div>
+                <div class="session-card">
+                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="mountains">
+                    <div class="card-body">
+                        <span class="tag">Sleep</span>
+                        <h3>Mountain Stillness</h3>
+                        <p>20 min • All levels</p>
+                    </div>
+                </div>
+                <div class="session-card">
+                    <img src="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="lake">
+                    <div class="card-body">
+                        <span class="tag">Calm</span>
+                        <h3>Lakeside Peace</h3>
+                        <p>12 min • Beginner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BREATHING EXERCISE -->
+    <section class="section" id="breathe">
+        <div class="section-inner">
+            <div class="breathing-panel">
+                <span class="section-label">Interactive</span>
+                <h2 class="section-title">Box Breathing</h2>
+                <p class="section-subtitle" style="margin:0 auto 30px;">Inhale 4s, hold 4s, exhale 4s, hold 4s</p>
+                <div class="breath-circle" id="breathCircle">
+                    <span class="breath-text" id="breathText">Start</span>
+                </div>
+                <p id="breathInstruction" style="color:var(--text-secondary);">Click to begin</p>
+                <button class="btn btn-primary" id="breathToggleBtn" style="margin-top:20px;">Start Breathing</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMER -->
+    <section class="section" id="timer">
+        <div class="section-inner">
+            <span class="section-label">Timer</span>
+            <h2 class="section-title">Silent meditation</h2>
+            <p class="section-subtitle">Set your time, close your eyes, and let a soft chime bring you back.</p>
+            <div class="timer-card">
+                <div class="timer-presets">
+                    <button class="timer-preset active" data-minutes="5">5 min</button>
+                    <button class="timer-preset" data-minutes="10">10 min</button>
+                    <button class="timer-preset" data-minutes="15">15 min</button>
+                    <button class="timer-preset" data-minutes="20">20 min</button>
+                </div>
+                <div class="timer-display" id="timerDisplay">05:00</div>
+                <div style="display:flex; gap:14px; justify-content:center;">
+                    <button class="btn btn-primary" id="timerStartBtn">Start</button>
+                    <button class="btn btn-outline" id="timerResetBtn" style="border-color:var(--border); color:var(--text);">Reset</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 Stillness. Made with love for your inner journey.</p>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Breathing exercise logic (same as before)
+        const breathCircle = document.getElementById('breathCircle');
+        const breathText = document.getElementById('breathText');
+        const breathInstruction = document.getElementById('breathInstruction');
+        const breathToggleBtn = document.getElementById('breathToggleBtn');
+        let breathActive = false, breathPhase = 0, breathInterval;
+        const phases = ['Inhale slowly...', 'Hold...', 'Exhale slowly...', 'Hold...'];
+        const durations = [4000,4000,4000,4000];
+
+        function stopBreathing() {
+            breathActive = false;
+            clearInterval(breathInterval);
+            breathCircle.classList.remove('inhale','exhale');
+            breathText.textContent = 'Start';
+            breathInstruction.textContent = 'Click to begin';
+            breathToggleBtn.textContent = 'Start Breathing';
+            breathPhase = 0;
+        }
+        function runBreathPhase() {
+            if (!breathActive) return;
+            const phase = breathPhase % 4;
+            breathInstruction.textContent = phases[phase];
+            if (phase === 0) { breathCircle.classList.add('inhale'); breathCircle.classList.remove('exhale'); breathText.textContent = 'In'; }
+            else if (phase === 1) { breathText.textContent = 'Hold'; }
+            else if (phase === 2) { breathCircle.classList.remove('inhale'); breathCircle.classList.add('exhale'); breathText.textContent = 'Out'; }
+            else { breathText.textContent = 'Hold'; }
+            breathPhase++;
+            breathInterval = setTimeout(runBreathPhase, durations[phase]);
+        }
+        function toggleBreathing() {
+            if (breathActive) stopBreathing();
+            else {
+                breathActive = true; breathPhase = 0;
+                breathCircle.classList.add('inhale'); breathText.textContent = 'In';
+                breathInstruction.textContent = 'Inhale slowly...';
+                breathToggleBtn.textContent = 'Stop Breathing';
+                breathInterval = setTimeout(runBreathPhase, durations[0]);
+            }
+        }
+        breathCircle.addEventListener('click', toggleBreathing);
+        breathToggleBtn.addEventListener('click', toggleBreathing);
+
+        // Timer logic
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerStartBtn = document.getElementById('timerStartBtn');
+        const timerResetBtn = document.getElementById('timerResetBtn');
+        const presets = document.querySelectorAll('.timer-preset');
+        let timerMinutes = 5, timerSeconds = 0, timerRunning = false, timerInterval;
+        function updateDisplay() { timerDisplay.textContent = `${String(timerMinutes).padStart(2,'0')}:${String(timerSeconds).padStart(2,'0')}`; }
+        function setPreset(min) {
+            timerMinutes = min; timerSeconds = 0; updateDisplay();
+            presets.forEach(p => p.classList.remove('active'));
+            document.querySelector(`[data-minutes="${min}"]`).classList.add('active');
+        }
+        presets.forEach(p => p.addEventListener('click', () => { if(!timerRunning) setPreset(parseInt(p.dataset.minutes)); }));
+        function stopTimer() { timerRunning = false; clearInterval(timerInterval); timerStartBtn.textContent = 'Start'; }
+        function resetTimer() { stopTimer(); const active = document.querySelector('.timer-preset.active'); setPreset(active ? parseInt(active.dataset.minutes) : 5); }
+        timerStartBtn.addEventListener('click', () => {
+            if (timerRunning) { stopTimer(); return; }
+            if (timerMinutes===0 && timerSeconds===0) { resetTimer(); return; }
+            timerRunning = true; timerStartBtn.textContent = 'Pause';
+            timerInterval = setInterval(() => {
+                if (timerSeconds===0) {
+                    if (timerMinutes===0) { stopTimer(); playChime(); resetTimer(); return; }
+                    timerMinutes--; timerSeconds=59;
+                } else timerSeconds--;
+                updateDisplay();
+            }, 1000);
+        });
+        timerResetBtn.addEventListener('click', resetTimer);
+        function playChime() {
+            try {
+                const ctx = new (window.AudioContext||window.webkitAudioContext)();
+                [523.25,659.25,783.99].forEach((f,i) => {
+                    const o = ctx.createOscillator(), g = ctx.createGain();
+                    o.type='sine'; o.frequency.value=f;
+                    g.gain.setValueAtTime(0.2, ctx.currentTime+i*0.2);
+                    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+i*0.2+1.2);
+                    o.connect(g); g.connect(ctx.destination);
+                    o.start(ctx.currentTime+i*0.2); o.stop(ctx.currentTime+i*0.2+1.2);
+                });
+            } catch(e){}
+        }
+        updateDisplay();
+    </script>
+</body>
+</html>
